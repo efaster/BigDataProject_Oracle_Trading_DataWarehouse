@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  oracle-trade:
+    image: gvenzl/oracle-free:23-slim-faststart
+    container_name: oracle-trade
+    environment:
+      - ORACLE_PASSWORD=${ORACLE_ROOT_PASSWORD}
+    ports:
+      - "${ORACLE_PORT}:1521"
+    volumes:
+      - oracle_data:/opt/oracle/oradata
+    restart: unless-stopped
+
+volumes:
+  oracle_data:

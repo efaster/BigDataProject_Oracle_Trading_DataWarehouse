@@ -1,0 +1,14 @@
+1. คำสั่งดู "รายงานผลการดำเนินงานด้านการซื้อขาย" (Volume & Revenue)
+
+SELECT * FROM dw_gold.rpt_trading_performance
+ORDER BY trade_date DESC, total_trading_value_thb DESC;
+
+2. คำสั่งดู "รายงานสถานะการถือครองและกลุ่มนักลงทุน" (Wealth Concentration)
+
+SELECT * FROM dw_gold.rpt_asset_holdings_by_tier
+ORDER BY portfolio_tier DESC, asset_type;
+
+3. คำสั่งดู "รายงานวิเคราะห์พฤติกรรมเชิงลึกของลูกค้า" (Investor Behavior)
+
+SELECT * FROM dw_gold.rpt_investor_behavior
+ORDER BY account_status, customer_loyalty_segment, security_level;
