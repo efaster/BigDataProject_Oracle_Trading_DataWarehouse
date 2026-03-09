@@ -9,7 +9,7 @@ BEGIN
     SELECT trade_id, pair_id, buy_order_id, sell_order_id, price, quantity, fee_amount, created_at, CURRENT_TIMESTAMP 
     FROM broker_app.Trades;
 
-    -- 🚀 โหลดข้อมูล Orders 
+    -- โหลดข้อมูล Orders 
     INSERT INTO dw_bronze.stg_buy_orders (buy_order_id, account_id, pair_id, price, quantity, filled_qty, status, order_type, created_at, stg_extraction_date)
     SELECT buy_order_id, account_id, pair_id, price, quantity, filled_qty, status, order_type, created_at, CURRENT_TIMESTAMP FROM broker_app.Buy_Orders;
 
