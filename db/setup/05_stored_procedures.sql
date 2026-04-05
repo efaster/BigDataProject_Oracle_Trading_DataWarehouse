@@ -36,7 +36,7 @@ BEGIN
     SET cash_balance = cash_balance - v_total_value 
     WHERE account_id = v_buyer_acc;
 
-    -- 5. เพิ่มเหรียญให้คนซื้อ (ใช้ MERGE เผื่อคนซื้อเพิ่งเคยเทรดเหรียญนี้ครั้งแรก)
+    -- 5. เพิ่มเหรียญให้คนซื้อ 
     MERGE INTO Holdings h
     USING (SELECT v_buyer_acc AS acc_id, v_base_asset AS ast_id FROM DUAL) src
     ON (h.account_id = src.acc_id AND h.asset_id = src.ast_id)

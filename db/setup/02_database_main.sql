@@ -1,6 +1,3 @@
--- ==========================================================
--- 2. USER CLUSTER (จัดการผู้ใช้งาน)
--- ==========================================================
 
 CREATE TABLE Users (
     user_id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,

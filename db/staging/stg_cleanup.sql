@@ -1,14 +1,23 @@
-DROP TABLE dw_bronze.stg_users CASCADE CONSTRAINTS;
-DROP TABLE dw_bronze.stg_accounts CASCADE CONSTRAINTS;
-DROP TABLE dw_bronze.stg_portfolio CASCADE CONSTRAINTS;
-DROP TABLE dw_bronze.stg_holdings CASCADE CONSTRAINTS;
-DROP TABLE dw_bronze.stg_assets CASCADE CONSTRAINTS;
-DROP TABLE dw_bronze.stg_trades CASCADE CONSTRAINTS;
-DROP TABLE dw_bronze.stg_trading_pairs CASCADE CONSTRAINTS;
-DROP TABLE dw_silver.dim_users CASCADE CONSTRAINTS;
-DROP TABLE dw_silver.dim_assets CASCADE CONSTRAINTS;
-DROP TABLE dw_silver.dim_trading_pairs CASCADE CONSTRAINTS;
-DROP TABLE dw_silver.dim_portfolios CASCADE CONSTRAINTS;
-DROP TABLE dw_silver.fact_trades CASCADE CONSTRAINTS;
-DROP TABLE dw_silver.fact_holdings CASCADE CONSTRAINTS;
-DROP TABLE dw_silver.ana_user_behavior CASCADE CONSTRAINTS;
+-- 1. Drop Reporting Views
+DROP VIEW rpt_trading_performance;
+DROP VIEW rpt_asset_holdings_by_tier;
+DROP VIEW rpt_investor_behavior;
+
+-- 2. Drop Mart Tables (Facts & Dimensions)
+DROP TABLE fct_trades CASCADE CONSTRAINTS;
+DROP TABLE fct_portfolio_snapshots CASCADE CONSTRAINTS;
+DROP TABLE dim_users CASCADE CONSTRAINTS;
+DROP TABLE dim_assets CASCADE CONSTRAINTS;
+DROP TABLE dim_trading_pairs CASCADE CONSTRAINTS;
+
+-- 3. Drop Staging Tables
+DROP TABLE stg_users CASCADE CONSTRAINTS;
+DROP TABLE stg_trades CASCADE CONSTRAINTS;
+DROP TABLE stg_assets CASCADE CONSTRAINTS;
+DROP TABLE stg_trading_pairs CASCADE CONSTRAINTS;
+
+-- 4. Drop Metadata & Control Tables
+DROP TABLE dbt_run_log CASCADE CONSTRAINTS;
+DROP TABLE dbt_artifacts CASCADE CONSTRAINTS;
+
+PROMPT 'DWH Cleanup Completed Successfully!';

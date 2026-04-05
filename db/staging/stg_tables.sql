@@ -1,42 +1,82 @@
--- 1. กลุ่มข้อมูลผู้ใช้งาน (สำหรับรายงาน 2)
-CREATE TABLE dw_bronze.stg_users (
+-- Staging: Users
+CREATE TABLE stg_users (
     user_id NUMBER,
-    username VARCHAR2(50),
-    email VARCHAR2(100),
+    username VARCHAR2(100),
+    email VARCHAR2(150),
     two_factor_enabled NUMBER(1),
     status VARCHAR2(20),
     created_at TIMESTAMP,
-    -- Technical Columns for SCD Type 2
-    stg_valid_from TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    stg_valid_to TIMESTAMP DEFAULT TO_TIMESTAMP('9999-12-31 23:59:59', 'YYYY-MM-DD HH24:MI:SS'),
-    stg_is_current NUMBER(1) DEFAULT 1,
-    stg_extraction_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    extraction_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 2. กลุ่มบัญชีและพอร์ต (สำหรับรายงาน 1 และ 2)
-CREATE TABLE dw_bronze.stg_accounts AS SELECT account_id, user_id, account_type, status, created_at FROM broker_app.Accounts WHERE 1=0;
-ALTER TABLE dw_bronze.stg_accounts ADD (stg_valid_from TIMESTAMP, stg_valid_to TIMESTAMP, stg_is_current NUMBER(1), stg_extraction_date TIMESTAMP);
+-- Staging: Accounts
+CREATE TABLE stg_accounts (
+    account_id NUMBER,
+    user_id NUMBER,
+    status VARCHAR2(20),
+    extraction_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
-CREATE TABLE dw_bronze.stg_portfolio AS SELECT portfolio_id, account_id, total_equity, cash_balance, updated_at FROM broker_app.Portfolio WHERE 1=0;
-ALTER TABLE dw_bronze.stg_portfolio ADD (stg_valid_from TIMESTAMP, stg_valid_to TIMESTAMP, stg_is_current NUMBER(1), stg_extraction_date TIMESTAMP);
+-- Staging: Trades
+CREATE TABLE stg_trades (
+    trade_id NUMBER,
+    pair_id NUMBER,
+    buy_order_id NUMBER,
+    sell_order_id NUMBER,
+    price NUMBER,
+    quantity NUMBER,
+    fee_amount NUMBER,
+    created_at TIMESTAMP,
+    extraction_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
--- 3. กลุ่มข้อมูลการถือครองและสินทรัพย์ (สำหรับรายงาน 1)
-CREATE TABLE dw_bronze.stg_holdings AS SELECT holding_id, account_id, asset_id, quantity, available_qty FROM broker_app.Holdings WHERE 1=0;
-ALTER TABLE dw_bronze.stg_holdings ADD (stg_valid_from TIMESTAMP, stg_valid_to TIMESTAMP, stg_is_current NUMBER(1), stg_extraction_date TIMESTAMP);
+-- Staging: Assets
+CREATE TABLE stg_assets (
+    asset_id NUMBER,
+    symbol VARCHAR2(20),
+    name VARCHAR2(100),
+    type VARCHAR2(50),
+    extraction_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
-CREATE TABLE dw_bronze.stg_assets AS SELECT asset_id, symbol, name, type FROM broker_app.Assets WHERE 1=0;
-ALTER TABLE dw_bronze.stg_assets ADD (stg_valid_from TIMESTAMP, stg_valid_to TIMESTAMP, stg_is_current NUMBER(1), stg_extraction_date TIMESTAMP);
+-- Staging: Portfolio
+CREATE TABLE stg_portfolio (
+    account_id NUMBER,
+    total_equity NUMBER,
+    cash_balance NUMBER,
+    extraction_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
--- 4. กลุ่มข้อมูลการเทรด (สำหรับรายงาน 1 และ 2)
-CREATE TABLE dw_bronze.stg_trades AS SELECT * FROM broker_app.Trades WHERE 1=0;
-ALTER TABLE dw_bronze.stg_trades ADD (stg_extraction_date TIMESTAMP);
+-- Staging: Holdings
+CREATE TABLE stg_holdings (
+    holding_id NUMBER,
+    account_id NUMBER,
+    asset_id NUMBER,
+    quantity NUMBER,
+    available_qty NUMBER,
+    extraction_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
-CREATE TABLE dw_bronze.stg_trading_pairs AS SELECT * FROM broker_app.Trading_Pairs WHERE 1=0;
-ALTER TABLE dw_bronze.stg_trading_pairs ADD (stg_extraction_date TIMESTAMP);
+-- Staging: Orders (Combined for analysis)
+CREATE TABLE stg_orders_all (
+    order_id NUMBER,
+    account_id NUMBER,
+    pair_id NUMBER,
+    price NUMBER,
+    quantity NUMBER,
+    order_type VARCHAR2(10),
+    side VARCHAR2(10),
+    extraction_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
--- 5. กลุ่มข้อมูลคำสั่งซื้อ/ขาย 
-CREATE TABLE dw_bronze.stg_buy_orders AS SELECT * FROM broker_app.Buy_Orders WHERE 1=0;
-ALTER TABLE dw_bronze.stg_buy_orders ADD (stg_extraction_date TIMESTAMP);
+-- Staging: Trading Pairs
+CREATE TABLE stg_trading_pairs (
+    pair_id NUMBER,
+    symbol VARCHAR2(50),
+    base_asset_id NUMBER,
+    quote_asset_id NUMBER,
+    status VARCHAR2(20),
+    extraction_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
-CREATE TABLE dw_bronze.stg_sell_orders AS SELECT * FROM broker_app.Sell_Orders WHERE 1=0;
-ALTER TABLE dw_bronze.stg_sell_orders ADD (stg_extraction_date TIMESTAMP);
+PROMPT 'Staging Models Created Successfully!';

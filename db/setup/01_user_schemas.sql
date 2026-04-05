@@ -1,26 +1,14 @@
--- 1. mainUser_Database 
-CREATE USER broker_app IDENTIFIED BY pass123;
-GRANT CONNECT, RESOURCE TO broker_app;
+-- Section 1: Application Source System User
+CREATE USER broker_app IDENTIFIED BY "AppPassword123#";
+GRANT CONNECT, RESOURCE, CREATE TABLE, CREATE VIEW, CREATE PROCEDURE TO broker_app;
 ALTER USER broker_app QUOTA UNLIMITED ON USERS;
 
--- 2. สร้างห้อง Bronze
-CREATE USER dw_bronze IDENTIFIED BY pass123;
-GRANT CONNECT, RESOURCE TO dw_bronze;
-ALTER USER dw_bronze QUOTA UNLIMITED ON USERS;
+-- Section 2: Data Warehouse User
+CREATE USER trading_dwh IDENTIFIED BY "DwhPassword123#";
+GRANT CONNECT, RESOURCE, CREATE TABLE, CREATE VIEW, CREATE PROCEDURE TO trading_dwh;
+ALTER USER trading_dwh QUOTA UNLIMITED ON USERS;
 
--- 3. สร้างห้อง Silver
-CREATE USER dw_silver IDENTIFIED BY pass123;
-GRANT CONNECT, RESOURCE TO dw_silver;
-ALTER USER dw_silver QUOTA UNLIMITED ON USERS;
+-- Section 3: Cross-Schema Permissions
+GRANT SELECT ANY TABLE TO trading_dwh;
 
--- 4. สร้างห้อง Gold 
-CREATE USER dw_gold IDENTIFIED BY pass123;
-GRANT CONNECT, RESOURCE TO dw_gold;
-ALTER USER dw_gold QUOTA UNLIMITED ON USERS;
-
---  ( ETL Pipeline)
-GRANT SELECT ANY TABLE TO dw_bronze;
-GRANT SELECT ANY TABLE TO dw_silver;
-GRANT SELECT ANY TABLE TO dw_gold;
-
-EXIT;
+PROMPT 'Application and DWH Users Created Successfully!';
